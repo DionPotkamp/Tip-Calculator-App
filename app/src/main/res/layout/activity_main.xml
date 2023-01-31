@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:labelFor="@id/priceField"
             android:text="@string/price_label"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_size" />
 
         <EditText
             android:id="@+id/priceField"
@@ -47,7 +47,8 @@
             android:ems="10"
             android:hint="@string/price_field_hint"
             android:inputType="number"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:textSize="@dimen/font_size" />
     </LinearLayout>
 
     <LinearLayout
@@ -68,7 +69,7 @@
             android:layout_height="match_parent"
             android:labelFor="@id/tipSeekBar"
             android:text="@string/tip_seekbar_label"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_size" />
 
         <SeekBar
             android:id="@+id/tipSeekBar"
@@ -97,7 +98,7 @@
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:text="@string/don_t_split"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_size" />
 
         <RadioButton
             android:id="@+id/splitOptionYes"
@@ -106,7 +107,7 @@
             android:labelFor="@id/splitOptionYesAmount"
             android:minHeight="48dp"
             android:text="@string/split_over"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_size" />
 
         <EditText
             android:id="@+id/splitOptionYesAmount"
@@ -116,7 +117,7 @@
             android:ems="5"
             android:inputType="number"
             android:minHeight="48dp"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_size" />
 
     </RadioGroup>
 
@@ -141,8 +142,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:labelFor="@id/totalCostText"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
                 android:text="@string/total_cost"
-                android:textSize="16sp" />
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/font_size" />
 
             <TextView
                 android:id="@+id/totalCostText"
@@ -150,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/zero_dollar"
-                android:textSize="16sp" />
+                android:textSize="@dimen/font_size" />
         </TableRow>
 
         <TableRow
@@ -163,8 +167,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:labelFor="@id/tipAmountText"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
                 android:text="@string/tip_amount"
-                android:textSize="16sp" />
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/font_size" />
 
             <TextView
                 android:id="@+id/tipAmountText"
@@ -172,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/zero_dollar"
-                android:textSize="16sp" />
+                android:textSize="@dimen/font_size" />
 
         </TableRow>
 
@@ -186,8 +193,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:labelFor="@id/perPersonText"
+                android:paddingStart="0dp"
+                android:paddingEnd="20dp"
                 android:text="@string/per_person"
-                android:textSize="16sp" />
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/font_size" />
 
             <TextView
                 android:id="@+id/perPersonText"
@@ -195,7 +205,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/zero_dollar"
-                android:textSize="16sp" />
+                android:textSize="@dimen/font_size" />
         </TableRow>
 
     </TableLayout>

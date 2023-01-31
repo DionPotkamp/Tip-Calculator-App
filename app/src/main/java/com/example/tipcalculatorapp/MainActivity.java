@@ -25,12 +25,13 @@ public class MainActivity extends AppCompatActivity {
     TextView tipAmountText;
     TextView totalCostText;
     TextView perPersonText;
+    TextView perPersonTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try
-        {
+        {   // Hide the action bar
             this.getSupportActionBar().hide();
         }
         catch (NullPointerException e){}
@@ -50,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         tipAmountText = findViewById(R.id.tipAmountText);
         totalCostText = findViewById(R.id.totalCostText);
         perPersonText = findViewById(R.id.perPersonText);
+        perPersonTextView = findViewById(R.id.perPersonTextView);
+        perPersonText.setEnabled(false);
+        perPersonTextView.setEnabled(false);
 
         tipSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -107,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
 
             if (splitOptionYesAmountText.isEmpty()) {
                 splitOptionYesAmountText = "1";
+                perPersonText.setEnabled(false);
+                perPersonTextView.setEnabled(false);
+            } else {
+                perPersonText.setEnabled(true);
+                perPersonTextView.setEnabled(true);
             }
 
             int splitOptionYesAmountInt = Integer.parseInt(splitOptionYesAmountText);

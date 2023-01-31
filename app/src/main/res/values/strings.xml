@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Tip Calculator App</string>
+    <string name="author">Dion Potkamp v1.0.0</string>
+    <string name="price_label">Price</string>
+    <string name="price_field_hint">$</string>
+    <string name="tip_seekbar_label">100%</string>
+    <string name="don_t_split">Don\'t split</string>
+    <string name="split_over">Split over:</string>
+    <string name="tip_amount">Tip Amount</string>
+    <string name="total_cost">Total Cost</string>
+    <string name="per_person">Per Person</string>
+    <string name="zero_dollar">$ 0.00</string>
+</resources>

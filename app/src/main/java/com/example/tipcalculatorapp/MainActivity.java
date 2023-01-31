@@ -118,7 +118,14 @@ public class MainActivity extends AppCompatActivity {
                 perPersonTextView.setEnabled(true);
             }
 
-            int splitOptionYesAmountInt = Integer.parseInt(splitOptionYesAmountText);
+            // If the user enters an integer that is too large, the app will crash.
+            int splitOptionYesAmountInt = 1;
+            try {
+                splitOptionYesAmountInt = Integer.parseInt(splitOptionYesAmountText);
+            } catch (NumberFormatException e) {
+                splitOptionYesAmount.setText("1");
+                splitOptionYesAmount.setSelection(1);
+            }
             perPerson = total / splitOptionYesAmountInt;
         }
 

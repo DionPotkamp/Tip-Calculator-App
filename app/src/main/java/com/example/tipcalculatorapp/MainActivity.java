@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         priceField = findViewById(R.id.priceField);
+        priceField.requestFocus();
 
         tipSeekBar      = findViewById(R.id.tipSeekBar);
         tipSeekBarLabel = findViewById(R.id.tipSeekBarLabel);

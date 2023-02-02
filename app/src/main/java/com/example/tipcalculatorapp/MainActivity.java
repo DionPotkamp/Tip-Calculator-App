@@ -12,6 +12,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+
+    private final int DEFAULT_TIP_PERCENT = 15;
     EditText priceField;
 
     SeekBar tipSeekBar;
@@ -41,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         tipSeekBar      = findViewById(R.id.tipSeekBar);
         tipSeekBarLabel = findViewById(R.id.tipSeekBarLabel);
-        tipSeekBarLabel.setText(tipSeekBar.getProgress() + "%");
+        tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
+        tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
 
         radioGroup           = findViewById(R.id.radioGroup);
         splitOptionNo        = findViewById(R.id.splitOptionNo);

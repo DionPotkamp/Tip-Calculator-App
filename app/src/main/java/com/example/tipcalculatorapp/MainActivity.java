@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -29,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     TextView perPersonText;
     TextView perPersonTextView;
 
+    Button clearButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         splitOptionNo        = findViewById(R.id.splitOptionNo);
         splitOptionYes       = findViewById(R.id.splitOptionYes);
         splitOptionYesAmount = findViewById(R.id.splitOptionYesAmount);
+        radioGroup.setOnCheckedChangeListener(this::RadioGroupOnCheckedChanged);
 
         tipAmountText = findViewById(R.id.tipAmountText);
         totalCostText = findViewById(R.id.totalCostText);
@@ -58,24 +63,24 @@ public class MainActivity extends AppCompatActivity {
         perPersonText.setEnabled(false);
         perPersonTextView.setEnabled(false);
 
+        clearButton = findViewById(R.id.clearButton);
+        clearButton.setOnClickListener(this::ClearButtonOnClick);
+
         tipSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tipSeekBarLabel.setText(progress + "%");
-                calculatePrice();
+                CalculatePrice();
             }
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            calculatePrice();
-        });
 
         priceField.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
-                calculatePrice();
+                CalculatePrice();
             }
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 splitOptionNo.setChecked(false);
                 splitOptionYes.setChecked(true);
-                calculatePrice();
+                CalculatePrice();
             }
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void calculatePrice() {
+    private void CalculatePrice() {
         String priceFieldText = priceField.getText().toString();
 
         if (priceFieldText.isEmpty()) {
@@ -135,5 +140,20 @@ public class MainActivity extends AppCompatActivity {
         tipAmountText.setText(String.format("$%.2f", tip));
         totalCostText.setText(String.format("$%.2f", total));
         perPersonText.setText(String.format("$%.2f", perPerson));
+    }
+
+    private void ClearButtonOnClick(View view) {
+        priceField.setText("");
+        priceField.requestFocus();
+
+        tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
+        tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
+
+        splitOptionYesAmount.setText("");
+        splitOptionNo.setChecked(true);
+    }
+
+    private void RadioGroupOnCheckedChanged(RadioGroup group, int checkedId) {
+        CalculatePrice();
     }
 }

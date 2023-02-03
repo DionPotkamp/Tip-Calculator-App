@@ -1,7 +1,5 @@
 package com.example.tipcalculatorapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,24 +36,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try
-        {   // Hide the action bar
+        try {   // Hide the action bar
             this.getSupportActionBar().hide();
+        } catch (NullPointerException ignored) {
         }
-        catch (NullPointerException e){}
         setContentView(R.layout.activity_main);
 
         priceField = findViewById(R.id.priceField);
         priceField.requestFocus();
 
-        tipSeekBar      = findViewById(R.id.tipSeekBar);
+        tipSeekBar = findViewById(R.id.tipSeekBar);
         tipSeekBarLabel = findViewById(R.id.tipSeekBarLabel);
         tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
         tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
 
-        radioGroup           = findViewById(R.id.radioGroup);
-        splitOptionNo        = findViewById(R.id.splitOptionNo);
-        splitOptionYes       = findViewById(R.id.splitOptionYes);
+        radioGroup = findViewById(R.id.radioGroup);
+        splitOptionNo = findViewById(R.id.splitOptionNo);
+        splitOptionYes = findViewById(R.id.splitOptionYes);
         splitOptionYesAmount = findViewById(R.id.splitOptionYesAmount);
         radioGroup.setOnCheckedChangeListener(this::RadioGroupOnCheckedChanged);
 
@@ -67,26 +66,35 @@ public class MainActivity extends AppCompatActivity {
         clearButton = findViewById(R.id.clearButton);
         clearButton.setOnClickListener(this::ClearButtonOnClick);
 
+        priceField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                CalculatePrice();
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+        });
+
         tipSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tipSeekBarLabel.setText(progress + "%");
                 CalculatePrice();
             }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
 
-
-        priceField.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                CalculatePrice();
+            public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 
         splitOptionYesAmount.addTextChangedListener(new TextWatcher() {
@@ -96,11 +104,30 @@ public class MainActivity extends AppCompatActivity {
                 splitOptionYes.setChecked(true);
                 CalculatePrice();
             }
+
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
         });
+    }
+
+    private void RadioGroupOnCheckedChanged(RadioGroup group, int checkedId) {
+        CalculatePrice();
+    }
+
+    private void ClearButtonOnClick(View view) {
+        priceField.setText("");
+        priceField.requestFocus();
+
+        tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
+        tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
+
+        splitOptionYesAmount.setText("");
+        splitOptionNo.setChecked(true);
     }
 
     private void CalculatePrice() {
@@ -141,20 +168,5 @@ public class MainActivity extends AppCompatActivity {
         tipAmountText.setText(String.format("$%.2f", tip));
         totalCostText.setText(String.format("$%.2f", total));
         perPersonText.setText(String.format("$%.2f", perPerson));
-    }
-
-    private void ClearButtonOnClick(View view) {
-        priceField.setText("");
-        priceField.requestFocus();
-
-        tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
-        tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
-
-        splitOptionYesAmount.setText("");
-        splitOptionNo.setChecked(true);
-    }
-
-    private void RadioGroupOnCheckedChanged(RadioGroup group, int checkedId) {
-        CalculatePrice();
     }
 }

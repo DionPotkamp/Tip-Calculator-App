@@ -1,12 +1,13 @@
 package com.example.tipcalculatorapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -15,15 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final int DEFAULT_TIP_PERCENT = 15;
     EditText priceField;
 
     SeekBar tipSeekBar;
     TextView tipSeekBarLabel;
 
     RadioGroup radioGroup;
-    RadioButton splitOptionNo;
-    RadioButton splitOptionYes;
     EditText splitOptionYesAmount;
 
     TextView tipAmountText;
@@ -32,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     TextView perPersonTextView;
 
     Button clearButton;
+    Button settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         tipSeekBar = findViewById(R.id.tipSeekBar);
         tipSeekBarLabel = findViewById(R.id.tipSeekBarLabel);
-        tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
-        tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
 
         radioGroup = findViewById(R.id.radioGroup);
-        splitOptionNo = findViewById(R.id.splitOptionNo);
-        splitOptionYes = findViewById(R.id.splitOptionYes);
         splitOptionYesAmount = findViewById(R.id.splitOptionYesAmount);
         radioGroup.setOnCheckedChangeListener(this::RadioGroupOnCheckedChanged);
 
@@ -65,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
 
         clearButton = findViewById(R.id.clearButton);
         clearButton.setOnClickListener(this::ClearButtonOnClick);
+        settingsButton = findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener(this::SettingsButtonOnClick);
 
         priceField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,37 +94,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        splitOptionYesAmount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable editable) {
-                splitOptionNo.setChecked(false);
-                splitOptionYes.setChecked(true);
-                CalculatePrice();
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-        });
+        splitOptionYesAmount.addTextChangedListener(textWatcher);
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            radioGroup.check(R.id.splitOptionYes);
+            CalculatePrice();
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            CalculatePrice();
+        }
+    };
 
     private void RadioGroupOnCheckedChanged(RadioGroup group, int checkedId) {
         CalculatePrice();
     }
 
+    private int clearCounter = 0;
+
     private void ClearButtonOnClick(View view) {
         priceField.setText("");
         priceField.requestFocus();
 
-        tipSeekBar.setProgress(DEFAULT_TIP_PERCENT);
-        tipSeekBarLabel.setText(DEFAULT_TIP_PERCENT + "%");
+        clearCounter++;
+        if (clearCounter > 4) {
+            // Show a dialog box to open settings
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.app_name))
+                    .setMessage(getResources().getString(R.string.clear_settings_dialog_message))
+                    .setPositiveButton(getResources().getString(R.string.settings), (dialog, which) -> SettingsButtonOnClick(null))
+                    .setNegativeButton(getResources().getString(R.string.cancel), null)
+                    .setIcon(android.R.drawable.ic_menu_save)
+                    .setOnDismissListener(dialog -> clearCounter = 0)
+                    .setCancelable(false)
+                    .show();
+        }
 
-        splitOptionYesAmount.setText("");
-        splitOptionNo.setChecked(true);
+        onResume();
+    }
+
+    private void SettingsButtonOnClick(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void CalculatePrice() {
@@ -142,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         double total = price + tip;
         double perPerson = total;
 
-        if (splitOptionYes.isChecked()) {
+        if (radioGroup.getCheckedRadioButtonId() == R.id.splitOptionYes) {
             String splitOptionYesAmountText = splitOptionYesAmount.getText().toString();
 
             if (splitOptionYesAmountText.isEmpty()) {
@@ -155,12 +171,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // If the user enters an integer that is too large, the app will crash.
-            int splitOptionYesAmountInt = 1;
+            int splitOptionYesAmountInt = 2;
             try {
                 splitOptionYesAmountInt = Integer.parseInt(splitOptionYesAmountText);
             } catch (NumberFormatException e) {
-                splitOptionYesAmount.setText("1");
-                splitOptionYesAmount.setSelection(1);
+                splitOptionYesAmount.setText("2");
+                splitOptionYesAmount.setSelection(2);
             }
             perPerson = total / splitOptionYesAmountInt;
         }
@@ -168,5 +184,21 @@ public class MainActivity extends AppCompatActivity {
         tipAmountText.setText(String.format("$%.2f", tip));
         totalCostText.setText(String.format("$%.2f", total));
         perPersonText.setText(String.format("$%.2f", perPerson));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences prefs = getSharedPreferences("com.example.tipcalculatorapp", MODE_PRIVATE);
+
+        // Remove the text watcher this prevents the wrong option to be selected.
+        splitOptionYesAmount.removeTextChangedListener(textWatcher);
+
+        tipSeekBar.setProgress(prefs.getInt("tipPercent", 15));
+        tipSeekBarLabel.setText(prefs.getInt("tipPercent", 15) + "%");
+        radioGroup.check(prefs.getInt("splitOption", R.id.splitOptionNo));
+        splitOptionYesAmount.setText(String.valueOf(prefs.getInt("splitOptionYesAmount", 2)));
+
+        splitOptionYesAmount.addTextChangedListener(textWatcher);
     }
 }

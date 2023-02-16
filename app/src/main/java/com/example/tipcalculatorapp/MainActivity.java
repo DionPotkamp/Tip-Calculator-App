@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText priceField;
@@ -35,10 +37,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {   // Hide the action bar
-            this.getSupportActionBar().hide();
-        } catch (NullPointerException ignored) {
-        }
+        // Hide the action bar
+        Objects.requireNonNull(this.getSupportActionBar()).hide();
         setContentView(R.layout.activity_main);
 
         priceField = findViewById(R.id.priceField);

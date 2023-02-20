@@ -179,6 +179,9 @@ public class MainActivity extends AppCompatActivity {
                 splitOptionYesAmount.setSelection(2);
             }
             perPerson = total / splitOptionYesAmountInt;
+        } else {
+            perPersonText.setEnabled(false);
+            perPersonTextView.setEnabled(false);
         }
 
         tipAmountText.setText(String.format("$%.2f", tip));
